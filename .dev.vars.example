@@ -1,0 +1,2 @@
+# Required secret. Enter the team's PIN in Cloudflare's secure setup field.
+APP_PIN=

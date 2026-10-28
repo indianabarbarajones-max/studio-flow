@@ -1,0 +1,57 @@
+{
+  "name": "studio-flow",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "node --use-env-proxy --watch --import tsx server/index.ts",
+    "dev:web": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && tsc --project tsconfig.worker.json && vite build",
+    "start": "node --use-env-proxy --import tsx server/index.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "test:browser": "npm run build && node --import tsx tests/browser.mjs",
+    "build:portable": "tsc --noEmit && node scripts/build-portable.mjs",
+    "test:portable": "npm run build:portable && node tests/portable.mjs",
+    "deploy": "wrangler deploy",
+    "dev:cloudflare": "wrangler dev",
+    "check:cloudflare": "wrangler deploy --dry-run --outdir .data/cloudflare-build",
+    "test:cloudflare": "npm run build && npm run check:cloudflare && node tests/cloudflare.mjs"
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/manrope": "^5.3.0",
+    "express": "^5.1.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261028.1",
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.5.0",
+    "concurrently": "^9.1.0",
+    "miniflare": "^4.20260730.0",
+    "playwright": "^1.51.0",
+    "tsx": "^4.19.0",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.0",
+    "wrangler": "^4.154.0"
+  },
+  "cloudflare": {
+    "bindings": {
+      "APP_PIN": {
+        "description": "PIN compartilhado para entrar no studio. Use o PIN combinado com a equipe. Guarde este valor como segredo."
+      },
+      "STUDIO": {
+        "description": "Banco persistente compartilhado entre os dispositivos. Usa SQLite do plano Workers Free."
+      }
+    }
+  }
+}

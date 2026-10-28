@@ -1,0 +1,31 @@
+# A persistent disk requires a paid Render web service.
+# Review the displayed price before creating this Blueprint.
+services:
+  - type: web
+    name: studio-flow
+    runtime: node
+    repo: https://github.com/indianabarbarajones-max/GPT
+    branch: codex/studio-flow
+    plan: starter
+    numInstances: 1
+    autoDeploy: false
+    buildCommand: npm ci --include=dev --no-audit --no-fund && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    disk:
+      name: studio-flow-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: DATABASE_PATH
+        value: /var/data/studio.sqlite
+      - key: APP_PIN
+        sync: false
+      - key: AI_MODEL
+        value: gpt-4.1-mini
